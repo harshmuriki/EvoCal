@@ -39,6 +39,13 @@ def send_message(message):
     )
     return (completion.choices[0].message)
 
+def process_messages(file_name):
+    #TODO: method might need to change as we move away from local txt files
+    f = open(file_name, 'r')
+    emails = f.split("!@#$%^&*()")
+    
+    pass
+
 if __name__ == '__main__':
     send_message()
 
