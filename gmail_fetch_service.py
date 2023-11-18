@@ -42,11 +42,7 @@ def get_unread_emails(service, user_email):
     for message in messages:
         msg = service.users().messages().get(userId='me', id=message['id'], format='full').execute()
         payload = msg['payload']
-        headers = payload.get('headers')
 
-        # subject = next(header['value'] for header in headers if header['name'] == 'Subject')
-        # f.write(f'Subject: {subject}\n')
-    
         if 'parts' in payload:
             for part in payload['parts']:
                 if part['mimeType'] == 'text/plain' or part['mimeType'] == 'text/html':
