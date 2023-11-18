@@ -4,6 +4,8 @@ import os
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 import base64
+import time
+from datetime import datetime, timedelta
 
 def get_gmail_service():
     SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -29,7 +31,11 @@ def get_gmail_service():
     return service, user_email
 
 def get_unread_emails(service, user_email):
-    results = service.users().messages().list(userId='me', labelIds=['INBOX'], q='is:unread').execute()
+    one_hour_ago = datetime.now() - timedelta(hours=1)
+    query_timestamp = int(time.mktime(one_hour_ago.timetuple()))
+    query = f'is:unread after:{query_timestamp}'
+
+    results = service.users().messages().list(userId='me', labelIds=['INBOX'], q=query).execute()
     messages = results.get('messages', [])
     f = open(f'email_{user_email.split("@")[0]}.txt', 'w')
 

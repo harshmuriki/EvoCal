@@ -41,7 +41,9 @@ def process_messages(file_name):
     emails = [re.sub(r'\n\s*\n', '\n', i) for i in emails]
     emails = [re.sub(r'https?://\S+', '', i) for i in emails]
     # Regular Expression to remove empty or incomplete brackets, parentheses, etc.
-    pattern = r'\[\s*\]|\(\s*\)|\{\s*\}|[\[\(\{]\s*($|\n)'
+    pattern = r'\[\]|\(\)|\{\}|[\[\({<](?=[\n\r]|$)'
+
+    #pattern = r'\[\s*\]|\(\s*\)|\{\s*\}|[\[\(\{]\s*($|\n)'
     emails = [re.sub(pattern, '', email) for email in emails]
     return emails
     pass
@@ -55,4 +57,4 @@ if __name__ == '__main__':
     # print(response.choices[0].message)
     message = process_messages("email_chinarshital.txt")
     print(len(message))
-    print(message[3])
+    print(message[0])
