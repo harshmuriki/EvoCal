@@ -1,8 +1,8 @@
 from openai import OpenAI
 
 def send_message(message):
-    few_shot_prompt = """
-        Instruction: Read the email content and classify it as 'Yes' if it contains information about a specific event (like a meeting, party, or gathering) with a particular place AND time and 'No' if it does not contain any specific event information.
+    few_shot_prompt = f"""
+        Instruction: Read the email content and classify it as '1' if it contains information about a specific event (like a meeting, party, or gathering) with a particular place AND time and '0' if it does not contain any specific event information.
 
         Email: "Hi everyone, Just a quick reminder about our study group session for the upcoming exams. We're meeting this Wednesday at 6 PM in the library's main study hall. Bring your notes, and let's ace these tests together! See you there, Alex"
         Classification: Yes
@@ -16,16 +16,7 @@ def send_message(message):
         Email: "Team, I've attached the summary of our team's performance for this month. Great work on achieving our targets! Let's keep this momentum going and brainstorm on how we can further improve in the coming month. I look forward to our continued success. Best, Linda"
         Classification: No
 
-        Email: "Hi Team, Just a heads-up that the new version of our design software is now available. It includes several new features and bug fixes. Please ensure you update your software by the end of this week. Let's make the most of these new tools to enhance our creativity! Cheers, Tom"
-        Classification: No
-
-        Email: "Hey friends, We're throwing a BBQ party this Saturday at our place and you're all invited! Expect good food, music, and lots of fun. When: Saturday, 5 PM onwards Where: 123 Sunshine Street Feel free to bring your favorite dish or drink. Let's make this a day to remember! Can't wait to see you all, Sarah and Dave"
-        Classification: Yes
-
-        Email: "Hello team,I wanted to share with you the latest updates to our project management guidelines. These changes are aimed at improving workflow efficiency and communication within the team.You can find the updated guidelines attached to this email. Please review them by the end of this week and implement the new procedures in your ongoing projects.If you have any questions or need clarification on the new guidelines, feel free to reach out to me."
-        Classification: No
-
-        Email: f"{message}"
+        Email: "{message}"
         Classification: [RETURN ONLY THE DIGIT HERE]
         """
     client = OpenAI(api_key = "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")
@@ -37,7 +28,7 @@ def send_message(message):
         {"role": "user", "content": f"{few_shot_prompt}"}
     ]
     )
-    return (completion.choices[0].message)
+    return completion
 
 def process_messages(file_name):
     #TODO: method might need to change as we move away from local txt files
@@ -45,7 +36,11 @@ def process_messages(file_name):
     emails = f.split("!@#$%^&*()")
     
     pass
+    
 
 if __name__ == '__main__':
-    send_message()
-
+    message = "Dear All,I'm excited to announce that our team has achieved a major milestone in the development of our new software. This success is a testament to the hard work and dedication of each team member.In light of this achievement, I would like to acknowledge everyone's effort and encourage you to keep up the excellent work. Our focus now shifts to the next phase of development, where your continued contributions will be crucial.Remember to update your task statuses in our project tracking tool, and let's maintain our momentum going forward."
+    response = send_message(message)
+    print(response.usage.prompt_tokens)
+    print(response.usage.completion_tokens)
+    print(response.choices[0].message)

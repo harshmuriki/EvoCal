@@ -23,11 +23,12 @@ def get_gmail_service():
         with open(f'token.json', 'w') as token:
             token.write(creds.to_json())
 
-    return build('gmail', 'v1', credentials=creds)
-
-def get_unread_emails(service):
+    service = build('gmail', 'v1', credentials=creds)
     user_info = service.users().getProfile(userId='me').execute()
     user_email = user_info['emailAddress']
+    return service, user_email
+
+def get_unread_emails(service, user_email):
     results = service.users().messages().list(userId='me', labelIds=['INBOX'], q='is:unread').execute()
     messages = results.get('messages', [])
     f = open(f'email_{user_email.split("@")[0]}.txt', 'w')
@@ -37,8 +38,8 @@ def get_unread_emails(service):
         payload = msg['payload']
         headers = payload.get('headers')
 
-        subject = next(header['value'] for header in headers if header['name'] == 'Subject')
-        f.write(f'Subject: {subject}\n')
+        # subject = next(header['value'] for header in headers if header['name'] == 'Subject')
+        # f.write(f'Subject: {subject}\n')
     
         if 'parts' in payload:
             for part in payload['parts']:
@@ -56,5 +57,5 @@ def get_unread_emails(service):
     f.close()
 
 if __name__ == '__main__':
-    service = get_gmail_service()
-    get_unread_emails(service)
+    service, email = get_gmail_service()
+    get_unread_emails(service, email)
