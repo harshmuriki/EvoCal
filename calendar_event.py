@@ -3,6 +3,7 @@ import googleapiclient.discovery
 from datetime import datetime, timedelta
 import os
 from google_auth_oauthlib.flow import InstalledAppFlow  # Add this import
+import json
 
 def get_calendar_service():
     SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -24,26 +25,31 @@ def get_calendar_service():
     service = googleapiclient.discovery.build('calendar', 'v3', credentials=creds)
     return service
 
-def create_calendar_event(service):
+def create_calendar_event(service, event_data):
     # Define event details
-    event = {
-        'summary': 'API test insert',
-        'description': 'Testing if inserting a basic event works',
-        'start': {
-            'dateTime': (datetime.now() + timedelta(hours=1)).isoformat(),
-            'timeZone': 'EST',
-        },
-        'end': {
-            'dateTime': (datetime.now() + timedelta(hours=2)).isoformat(),
-            'timeZone': 'EST',
-        },
-    }
+    # print(event_data)
+    for event_ in event_data:
+        print(event_)
+        event = {
+            'summary': event_['name'],
+            'description': event_['location'],
+            'start': {
+                'dateTime': (datetime.now() + timedelta(hours=1)).isoformat(),
+                'timeZone': 'EST',
+            },
+            'end': {
+                'dateTime': (datetime.now() + timedelta(hours=2)).isoformat(),
+                'timeZone': 'EST',
+            },
+        }
 
-    # Insert the event into the calendar
-    event = service.events().insert(calendarId='primary', body=event).execute()
+        # Insert the event into the calendar
+        event = service.events().insert(calendarId='primary', body=event).execute()
 
-    print(f'Event created: {event["htmlLink"]}')
+        print(f'Event created: {event["htmlLink"]}')
 
 if __name__ == '__main__':
     calendar_service = get_calendar_service()
-    create_calendar_event(calendar_service)
+    with open('event_data.json', 'r') as file:
+        event_data = json.load(file)
+    create_calendar_event(calendar_service, event_data)
