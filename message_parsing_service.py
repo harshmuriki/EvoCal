@@ -1,4 +1,5 @@
 from openai import OpenAI
+import re
 
 def send_message(message):
     few_shot_prompt = f"""
@@ -32,15 +33,26 @@ def send_message(message):
 
 def process_messages(file_name):
     #TODO: method might need to change as we move away from local txt files
-    f = open(file_name, 'r')
-    emails = f.split("!@#$%^&*()")
-    
+    f = open(file_name, 'r').read()
+    emails = [i.strip() for i in f.split("!@#$%^&*()")]
+    #remove empty or whitespace only strings
+    emails = [i for i in emails if i]
+    #links = [re.findall(r'(https?://\S+)', i) for i in emails]    
+    emails = [re.sub(r'\n\s*\n', '\n', i) for i in emails]
+    emails = [re.sub(r'https?://\S+', '', i) for i in emails]
+    # Regular Expression to remove empty or incomplete brackets, parentheses, etc.
+    pattern = r'\[\s*\]|\(\s*\)|\{\s*\}|[\[\(\{]\s*($|\n)'
+    emails = [re.sub(pattern, '', email) for email in emails]
+    return emails
     pass
     
 
 if __name__ == '__main__':
-    message = "Dear All,I'm excited to announce that our team has achieved a major milestone in the development of our new software. This success is a testament to the hard work and dedication of each team member.In light of this achievement, I would like to acknowledge everyone's effort and encourage you to keep up the excellent work. Our focus now shifts to the next phase of development, where your continued contributions will be crucial.Remember to update your task statuses in our project tracking tool, and let's maintain our momentum going forward."
-    response = send_message(message)
-    print(response.usage.prompt_tokens)
-    print(response.usage.completion_tokens)
-    print(response.choices[0].message)
+    # message = "Dear All,I'm excited to announce that our team has achieved a major milestone in the development of our new software. This success is a testament to the hard work and dedication of each team member.In light of this achievement, I would like to acknowledge everyone's effort and encourage you to keep up the excellent work. Our focus now shifts to the next phase of development, where your continued contributions will be crucial.Remember to update your task statuses in our project tracking tool, and let's maintain our momentum going forward."
+    # response = send_message(message)
+    # print(response.usage.prompt_tokens)
+    # print(response.usage.completion_tokens)
+    # print(response.choices[0].message)
+    message = process_messages("email_chinarshital.txt")
+    print(len(message))
+    print(message[3])
