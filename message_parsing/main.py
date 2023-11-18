@@ -1,6 +1,5 @@
 from openai import OpenAI
 import re
-import pickle
 from flask import Flask, request, jsonify
 import json
 
@@ -28,10 +27,8 @@ def classify_message(message):
     )
     return True if "1" in completion.choices[0].message.content else False
 
-def process_messages(file_name):
-    #TODO: method might need to change as we move away from local txt files
-    f = open(file_name, 'r').read()
-    emails = [i.strip() for i in f.split("!@#$%^&*()")]
+def process_messages(email_string):
+    emails = [i.strip() for i in email_string.split("!@#$%^&*()")]
     #remove empty or whitespace only strings
     emails = [i for i in emails if i]
     #links = [re.findall(r'(https?://\S+)', i) for i in emails]    
@@ -68,10 +65,12 @@ def extract_events(email):
     )
     return completion.choices[0].message.content
 
-def master_service(file_name):
-    emails = process_messages(file_name)
+def master_llm_service(email_string):
+    emails = process_messages(email_string)
+    print(len(emails))
     #keep only those that return true for classify_message
     emails = [i for i in emails if classify_message(i)]
+    print(len(emails))
     if len(emails) == 0:
         return []
     events = [extract_events(i) for i in emails]
@@ -82,11 +81,11 @@ app = Flask(__name__)
 @app.route('/process_file', methods=['POST'])
 def process_file():
     try:
-        file_name = request.json['file_name']
-        result = master_service(file_name)
+        email_string = request.json['data']
+        result = master_llm_service(email_string)
         return jsonify(result)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)})
 if __name__ == '__main__':
     app.run(debug=True)
     pass
