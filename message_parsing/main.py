@@ -75,7 +75,7 @@ def master_llm_service(email_string):
     if len(emails) == 0:
         return []
     events = [extract_events(i) for i in emails]
-    events = [json.loads(i)["events"] for i in events][0]
+    events = [json.loads(i)["events"] for i in events]
     return events
 
 app = Flask(__name__)

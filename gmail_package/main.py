@@ -26,7 +26,7 @@ def get_gmail_service(REFRESH_TOKEN):
 
 
 def get_unread_emails(service):
-    one_hour_ago = datetime.now() - timedelta(hours=100)
+    one_hour_ago = datetime.now() - timedelta(hours=1)
     query_timestamp = int(time.mktime(one_hour_ago.timetuple()))
     query = f'is:unread after:{query_timestamp}'
 
@@ -59,6 +59,8 @@ def get_unread_emails(service):
 
 
 app = Flask(__name__)
+
+
 @app.route('/email_data', methods=['POST'])
 def email_data():
     try:
@@ -68,6 +70,7 @@ def email_data():
         return jsonify(get_unread_emails(service))
     except Exception as e:
         return jsonify({'error': str(e)})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
