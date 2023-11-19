@@ -16,7 +16,7 @@ def classify_message(message):
         Email: "{message}"
         Classification:
         """
-    client = OpenAI(api_key = "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")
+    client = OpenAI(api_key = "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")
 
     completion = client.chat.completions.create(
     model="gpt-4-1106-preview",
@@ -43,7 +43,7 @@ def process_messages(email_string):
 
 def extract_events(email):
     extraction_prompt = f"""
-    Instruction: Analyze the provided email and extract event information into a list of structured JSON objects. Each JSON object should contain the tags: "name" for the event name, "time" for the time of the event, and "location" for the location of the event. Be aware that:
+    Instruction: Analyze the provided email and extract event information into a list of structured JSON objects. Each JSON object should contain the tags: "name" for the event name, "start_time" for the time of the start of the event in iosformat, "end_time" for the time of the end of the event in iosformat, and "location" for the location of the event. Be aware that:
 
         - There may be multiple events mentioned in a single email. Each event should be represented as a separate JSON object in the list.
         - Real-world email data can be messy, with random line breaks, irrelevant words, unicode characters, and addresses that may not be related to an event. Ensure robustness in handling such irregularities.
@@ -53,7 +53,7 @@ def extract_events(email):
         Email: {email}
         Extracted Information:
     """
-    client = OpenAI(api_key = "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")
+    client = OpenAI(api_key = "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")
 
     completion = client.chat.completions.create(
     model = "gpt-3.5-turbo-1106",

@@ -29,16 +29,16 @@ def create_calendar_event(service, event_data):
     # Define event details
     # print(event_data)
     for event_ in event_data:
-        print(event_)
+        # print(event_)
         event = {
             'summary': event_['name'],
-            'description': event_['location'],
+            'location': event_['location'],
             'start': {
-                'dateTime': (datetime.now() + timedelta(hours=1)).isoformat(),
+                'dateTime': event_['start_time'],
                 'timeZone': 'EST',
             },
             'end': {
-                'dateTime': (datetime.now() + timedelta(hours=2)).isoformat(),
+                'dateTime': event_['end_time'],
                 'timeZone': 'EST',
             },
         }
@@ -46,7 +46,7 @@ def create_calendar_event(service, event_data):
         # Insert the event into the calendar
         event = service.events().insert(calendarId='primary', body=event).execute()
 
-        print(f'Event created: {event["htmlLink"]}')
+        # print(f'Event created: {event["htmlLink"]}')
 
 if __name__ == '__main__':
     calendar_service = get_calendar_service()
