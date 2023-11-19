@@ -13,3 +13,8 @@ body {
 :any-link:not(:hover, :focus, :active) {
   text-decoration: none;
 }
+
+/* styles/tailwind.css */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";

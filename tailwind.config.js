@@ -7,10 +7,14 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      colors: {
+        black: '#000', // Set black color
+      },
+      backgroundColor: {
+        primary: 'black', // Set black as the primary background color
+      },
+      textColor: {
+        primary: 'white', // Set white as the primary text color
       },
     },
   },
