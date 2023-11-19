@@ -5,8 +5,8 @@ import json
 
 def classify_message(message):
     few_shot_prompt = f"""
-        Instruction: Read the email content and classify it as '1' if it contains information about a specific event (like a meeting, party, or gathering) with a particular place AND time and '0' if it does not contain any specific event information.
-
+        Instruction: Read the email content and classify it as '1' if it contains information about a specific event (like a meeting, party, or gathering) with a particular place AND time and '0' if it does not contain any specific event information. 
+        
         Email: "Hi everyone, Just a quick reminder about our study group session for the upcoming exams. We're meeting this Wednesday at 6 PM in the library's main study hall. Bring your notes, and let's ace these tests together! See you there, Alex"
         Classification: Yes
 
@@ -44,7 +44,8 @@ def process_messages(email_string):
 def extract_events(email):
     extraction_prompt = f"""
     Instruction: Analyze the provided email and extract event information into a list of structured JSON objects. Each JSON object should contain the tags: "name" for the event name, "start_time" for the time of the start of the event in iosformat, "end_time" for the time of the end of the event in iosformat, and "location" for the location of the event. Be aware that:
-
+        
+        - Consider events like study groups, team sports, theatrical performances, and online webinars, but exclude general announcements, holiday notices, or campus closure information.Assess the email content for details like date, time, and location of the event to accurately classify it.
         - There may be multiple events mentioned in a single email. Each event should be represented as a separate JSON object in the list.
         - Real-world email data can be messy, with random line breaks, irrelevant words, unicode characters, and addresses that may not be related to an event. Ensure robustness in handling such irregularities.
         - Even if there's only one event, the information should still be formatted as a list containing a single JSON object.
