@@ -11,8 +11,25 @@ const Home = () => {
         if (GoogleSession) {
             // Set the Google access token when the GoogleSession object is available
             setGoogleAccessToken(GoogleSession.user.accessToken);
+            
+            if (currentGoogleAccessToken) {
+                // Send the currentGoogleAccessToken to an endpoint
+                fetch('https://uploadtoken-3l6j2umkza-uc.a.run.app', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ accessToken: currentGoogleAccessToken })
+                })
+                .then(response => {
+                    // Handle the response
+                })
+                .catch(error => {
+                    // Handle the error
+                });
+            }
         }
-    }, [GoogleSession]);
+    }, [GoogleSession, currentGoogleAccessToken]);
 
     return (
         <div className={styles.container}>
