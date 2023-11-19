@@ -50,6 +50,7 @@ def create_calendar_event(service, event_data):
 
 if __name__ == '__main__':
     calendar_service = get_calendar_service()
+    response = requests.post('https://messageparsing-3l6j2umkza-uc.a.run.app', json=data)
     with open('event_data.json', 'r') as file:
         event_data = json.load(file)
     create_calendar_event(calendar_service, event_data)
