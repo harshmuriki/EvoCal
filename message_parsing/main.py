@@ -2,11 +2,13 @@ from openai import OpenAI
 import re
 from flask import Flask, request, jsonify
 import json
+import os
+
 
 def classify_message(message):
     few_shot_prompt = f"""
-        Instruction: Read the email content and classify it as '1' if it contains information about a specific event (like a meeting, party, or gathering) with a particular place AND time and '0' if it does not contain any specific event information. 
-        
+        Instruction: Read the email content and classify it as '1' if it contains information about a specific event (like a meeting, party, or gathering) with a particular place AND time and '0' if it does not contain any specific event information.
+
         Email: "Hi everyone, Just a quick reminder about our study group session for the upcoming exams. We're meeting this Wednesday at 6 PM in the library's main study hall. Bring your notes, and let's ace these tests together! See you there, Alex"
         Classification: Yes
 
@@ -16,35 +18,38 @@ def classify_message(message):
         Email: "{message}"
         Classification:
         """
-    client = OpenAI(api_key = "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")
+    client = OpenAI(api_key=os.environ.get('OPENAI_API')
+                    )
 
     completion = client.chat.completions.create(
-    model="gpt-4-1106-preview",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": f"{few_shot_prompt}"}
-    ]
+        model="gpt-4-1106-preview",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"{few_shot_prompt}"}
+        ]
     )
     return True if "1" in completion.choices[0].message.content else False
 
+
 def process_messages(email_string):
     emails = [i.strip() for i in email_string.split("!@#$%^&*()")]
-    #remove empty or whitespace only strings
+    # remove empty or whitespace only strings
     emails = [i for i in emails if i]
-    #links = [re.findall(r'(https?://\S+)', i) for i in emails]    
-    
+    # links = [re.findall(r'(https?://\S+)', i) for i in emails]
+
     emails = [re.sub(r'https?://\S+', '', i) for i in emails]
     # Regular Expression to remove empty or incomplete brackets, parentheses, etc.
     pattern = r'\[\]|\(\)|\{\}|[\[\({<](?=[\n\r]|$)'
     emails = [re.sub(r'\n\s*\n', '', i) for i in emails]
-    #pattern = r'\[\s*\]|\(\s*\)|\{\s*\}|[\[\(\{]\s*($|\n)'
+    # pattern = r'\[\s*\]|\(\s*\)|\{\s*\}|[\[\(\{]\s*($|\n)'
     emails = [re.sub(pattern, '', email) for email in emails]
     return emails
+
 
 def extract_events(email):
     extraction_prompt = f"""
     Instruction: Analyze the provided email and extract event information into a list of structured JSON objects. Each JSON object should contain the tags: "name" for the event name, "start_time" for the time of the start of the event in iosformat, "end_time" for the time of the end of the event in iosformat, and "location" for the location of the event. Be aware that:
-        
+
         - Consider events like study groups, team sports, theatrical performances, and online webinars, but exclude general announcements, holiday notices, or campus closure information.Assess the email content for details like date, time, and location of the event to accurately classify it.
         - There may be multiple events mentioned in a single email. Each event should be represented as a separate JSON object in the list.
         - Real-world email data can be messy, with random line breaks, irrelevant words, unicode characters, and addresses that may not be related to an event. Ensure robustness in handling such irregularities.
@@ -54,22 +59,24 @@ def extract_events(email):
         Email: {email}
         Extracted Information:
     """
-    client = OpenAI(api_key = "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")
+    client = OpenAI(
+        api_key="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")
 
     completion = client.chat.completions.create(
-    model = "gpt-3.5-turbo-1106",
-    response_format = { "type": "json_object"},
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": f"{extraction_prompt}"}
-    ]
+        model="gpt-3.5-turbo-1106",
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"{extraction_prompt}"}
+        ]
     )
     return completion.choices[0].message.content
+
 
 def master_llm_service(email_string):
     emails = process_messages(email_string)
     print(len(emails))
-    #keep only those that return true for classify_message
+    # keep only those that return true for classify_message
     emails = [i for i in emails if classify_message(i)]
     print(len(emails))
     if len(emails) == 0:
@@ -78,7 +85,10 @@ def master_llm_service(email_string):
     events = [json.loads(i)["events"] for i in events]
     return events
 
+
 app = Flask(__name__)
+
+
 @app.route('/process_file', methods=['POST'])
 def process_file():
     try:
@@ -87,7 +97,8 @@ def process_file():
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)})
-    
+
+
 if __name__ == '__main__':
     app.run(debug=True)
     pass

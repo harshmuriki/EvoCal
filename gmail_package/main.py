@@ -15,8 +15,8 @@ def get_gmail_service(REFRESH_TOKEN):
     # Create a credentials object using the provided information
     creds = Credentials(
         None,
-        client_id=os.getenv('GOOGLE_CLIENT_ID'),
-        client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+        client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+        client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
         refresh_token=REFRESH_TOKEN,
         token_uri='https://oauth2.googleapis.com/token'
     )

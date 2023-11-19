@@ -7,8 +7,8 @@ from flask import Flask, request, jsonify
 def get_calendar_service(REFRESH_TOKEN):
     creds = Credentials(
         None,
-        client_id=os.getenv('GOOGLE_CLIENT_ID'),
-        client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+        client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+        client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
         refresh_token=REFRESH_TOKEN,
         token_uri='https://oauth2.googleapis.com/token'
     )

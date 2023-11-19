@@ -14,8 +14,8 @@ def get_gmail_service(REFRESH_TOKEN):
     # Create a credentials object using the provided information
     creds = Credentials(
         None,
-        client_id=os.getenv('GOOGLE_CLIENT_ID'),
-        client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+        client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+        client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
         refresh_token=REFRESH_TOKEN,
         token_uri='https://oauth2.googleapis.com/token'
     )
@@ -53,10 +53,11 @@ def get_unread_emails(service):
             data += decoded_data.decode('utf-8')
 
         data += "!@#$%^&*()" + "\n\n"
-        
+
         return data
 
 
 if __name__ == '__main__':
-    service = get_gmail_service('ya29.a0AfB_byBQynIdUUf38J-51xiTAbeKOD5_mIXg2fJWkGjAYJnl2JhrShkre1wI9kN2KB_ng9w4DNW15p_W3_YkgVx0o3kNMNLSCCFBUd22MrCMel3bTr84jZfJ__LpYLcJUjBpjcOO_9ZMS_4hfLZWnA6IXbhKm1S-SqvJaCgYKAVcSARESFQHGX2MiO-PNusGpZKAjrK4ifcGOsQ0171')
+    service = get_gmail_service(
+        'ya29.a0AfB_byBQynIdUUf38J-51xiTAbeKOD5_mIXg2fJWkGjAYJnl2JhrShkre1wI9kN2KB_ng9w4DNW15p_W3_YkgVx0o3kNMNLSCCFBUd22MrCMel3bTr84jZfJ__LpYLcJUjBpjcOO_9ZMS_4hfLZWnA6IXbhKm1S-SqvJaCgYKAVcSARESFQHGX2MiO-PNusGpZKAjrK4ifcGOsQ0171')
     get_unread_emails(service)
