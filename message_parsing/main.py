@@ -91,16 +91,3 @@ def process_file():
 if __name__ == '__main__':
     app.run(debug=True)
     pass
-
-
-# if __name__ == '__main__':
-#     # message = "Dear All,I'm excited to announce that our team has achieved a major milestone in the development of our new software. This success is a testament to the hard work and dedication of each team member.In light of this achievement, I would like to acknowledge everyone's effort and encourage you to keep up the excellent work. Our focus now shifts to the next phase of development, where your continued contributions will be crucial.Remember to update your task statuses in our project tracking tool, and let's maintain our momentum going forward."
-#     # response = classify_message(message)
-#     # print(response)
-#     # message = process_messages("email_chinarshital.txt")
-#     # print(len(message))
-#     # print(extract_events(message[4]))
-#     pass
-#     with open("output.pkl", "wb") as f:
-#         pickle.dump(master_service("email_chinarshital.txt"), f)
-    

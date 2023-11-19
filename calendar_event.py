@@ -4,8 +4,12 @@ from datetime import datetime, timedelta
 import os
 from google_auth_oauthlib.flow import InstalledAppFlow  # Add this import
 import json
+<<<<<<< Updated upstream
 from google.oauth2.credentials import Credentials
 
+=======
+import requests
+>>>>>>> Stashed changes
 
 def get_calendar_service():
     SCOPES = ['https://www.googleapis.com/auth/calendar']
