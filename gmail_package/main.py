@@ -54,6 +54,7 @@ def get_unread_emails(service):
             data += decoded_data.decode('utf-8')
 
         data += "!@#$%^&*()" + "\n\n"
+        print(data)
 
         return data
 
