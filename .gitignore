@@ -44,8 +44,3 @@ next-env.d.ts
 .vscode
 
 hello/
-
-
-/credentials.json
-/event_data.json
-/calendar_token.json
