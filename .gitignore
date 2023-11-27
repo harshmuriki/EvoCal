@@ -46,3 +46,6 @@ next-env.d.ts
 hello/
 
 
+/credentials.json
+/event_data.json
+/calendar_token.json
