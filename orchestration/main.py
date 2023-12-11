@@ -38,11 +38,11 @@ def process_tokens():
             calendar_endpoint = "http://127.0.0.1:5002/calendar_invite"
 
             first_response = requests.post(gmail_endpoint, json={'data': token}).json()
-            print('here1')
+            # print('here1')
             second_response = requests.post(llm_endpoint, json={'data': first_response}).json()
-            print('here2')
+            # print('here2')
             third_response = requests.post(calendar_endpoint, json={'data': token, 'body': second_response}).json()
-            print('here3')
+            # print('here3')
     except mysql.connector.Error as err:
         print(f"Error: {err}")
     except requests.RequestException as e:
@@ -61,5 +61,5 @@ if __name__ == '__main__':
     while True:
 
         process_tokens()
-        time.sleep(3600)
+        time.sleep(1000)
         pass
